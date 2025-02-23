@@ -207,4 +207,28 @@ describe("Dependency Injection", () => {
 
     assert.notStrictEqual(a, b);
   });
+
+  it("should resolve multi classes", () => {
+    const container = createDependencyInjectionContainer();
+
+    const token = container.createInjectableToken<Type<{ val: number }>>("classes");
+
+    class A {
+      val = 5;
+    }
+
+    class B {
+      val = 6;
+    }
+
+    container.makeInjectable(token, A, { multi: true });
+    container.makeInjectable(token, B, { multi: true });
+
+    const classes = container.inject(token, { multi: true });
+
+    assert.deepEqual(
+      classes.map(x => x.val),
+      [5, 6],
+    );
+  });
 });

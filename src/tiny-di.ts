@@ -69,12 +69,21 @@ export const createDependencyInjectionContainer = () => {
 
     if (registry.has(target)) {
       const reg = registry.get(target);
-      if (typeof reg === "function") {
-        const val = Array.isArray(reg) ? reg.map(tryCreateInstance) : tryCreateInstance(reg);
-        instances.set(target, val);
-      } else {
-        instances.set(target, reg);
-      }
+
+      const val = (() => {
+        if (Array.isArray(reg)) {
+          return reg.map(x => (typeof x === "function" ? tryCreateInstance(x) : x));
+        } else {
+          if (typeof reg === "function") {
+            return tryCreateInstance(reg);
+          } else {
+            return reg;
+          }
+        }
+      })();
+
+      instances.set(target, val);
+
       return instances.get(target);
     }
 
@@ -89,42 +98,22 @@ export const createDependencyInjectionContainer = () => {
     options?: { multi?: boolean; name?: string },
   ): void;
   function makeInjectable(target: any, value: any = target, options?: { multi?: boolean; name?: string }) {
-    if (typeof value === "function") {
-      if (options?.name) {
-        if (!namedRegistry.has(target)) namedRegistry.set(target, new Map());
+    if (options?.multi) {
+      registry.set(target, [...(registry.get(target) || []), value]);
+    } else if (options?.name) {
+      if (!namedRegistry.has(target)) namedRegistry.set(target, new Map());
 
-        if (namedRegistry.get(target).has(options.name)) {
-          throw Error(`'${target}' token has been already registered with '${options.name}' name`);
-        }
-
-        namedRegistry.get(target).set(options.name, value);
-      } else if (options?.multi) {
-        registry.set(target, [...(registry.get(target) || []), value]);
-      } else {
-        if (registry.has(target)) {
-          throw Error(`'${target}' token has been already registered`);
-        }
-
-        registry.set(target, value);
+      if (namedRegistry.get(target).has(options.name)) {
+        throw Error(`'${target}' token has been already registered with '${options.name}' name`);
       }
+
+      namedRegistry.get(target).set(options.name, value);
     } else {
-      if (options?.multi) {
-        registry.set(target, [...(registry.get(target) || []), value]);
-      } else if (options?.name) {
-        if (!namedRegistry.has(target)) namedRegistry.set(target, new Map());
-
-        if (namedRegistry.get(target).has(options.name)) {
-          throw Error(`'${target}' token has been already registered with '${options.name}' name`);
-        }
-
-        namedRegistry.get(target).set(options.name, value);
-      } else {
-        if (registry.has(target)) {
-          throw Error(`'${target}' token has been already registered`);
-        }
-
-        registry.set(target, value);
+      if (registry.has(target)) {
+        throw Error(`'${target}' token has been already registered`);
       }
+
+      registry.set(target, value);
     }
   }
 
