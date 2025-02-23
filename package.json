@@ -1,0 +1,27 @@
+{
+  "name": "@greegko/tiny-di",
+  "description": "Zero dependency tiny dependency injection utility",
+  "version": "1.0.0",
+  "keywords": [
+    "dependency-injection",
+    "zero-dependency"
+  ],
+  "author": "Greegko",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/tiny-di.js",
+  "types": "./dist/tiny-di.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test --import=tsx ./src/tiny-di.spec.ts"
+  },
+  "devDependencies": {
+    "@types/node": "18.19.76",
+    "prettier": "3.5.2",
+    "typescript": "5.7.3",
+    "tsx": "4.19.3"
+  }
+}

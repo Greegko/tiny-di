@@ -1,0 +1,19 @@
+{
+  "files": ["./src/tiny-di.ts"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "target": "ESNext",
+    "module": "ESNext",
+    "noUnusedLocals": true,
+    "strict": true,
+    "outDir": "./dist",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": false,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true
+  }
+}
