@@ -143,8 +143,7 @@ describe("Dependency Injection", () => {
   it("should allow to name instances", () => {
     const container = createDependencyInjectionContainer();
 
-    const token =
-      container.createInjectableToken<Type<{ val: number }>>("classes");
+    const token = container.createInjectableToken<Type<{ val: number }>>("classes");
 
     class A {
       val = 1;
@@ -178,5 +177,34 @@ describe("Dependency Injection", () => {
     container.makeInjectable(token, A);
 
     assert.equal(container.inject(token).val, 5);
+  });
+
+  it("should return the same instance", () => {
+    const container = createDependencyInjectionContainer();
+
+    @container.injectable()
+    class A {
+      val = 5;
+    }
+
+    const a = container.inject(A);
+    const b = container.inject(A);
+
+    assert.strictEqual(a, b);
+  });
+
+  it("should be able clear the instances", () => {
+    const container = createDependencyInjectionContainer();
+
+    @container.injectable()
+    class A {
+      val = 5;
+    }
+
+    const a = container.inject(A);
+    container.clearInstances();
+    const b = container.inject(A);
+
+    assert.notStrictEqual(a, b);
   });
 });
