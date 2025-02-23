@@ -1,7 +1,11 @@
 {
   "name": "@greegko/tiny-di",
   "description": "Zero dependency tiny dependency injection utility",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "keywords": [
     "dependency-injection",
     "zero-dependency"
