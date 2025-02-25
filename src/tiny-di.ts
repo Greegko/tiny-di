@@ -14,7 +14,14 @@ function tryCreateInstance(reg: any) {
   }
 }
 
-export const createDependencyInjectionContainer = () => {
+/**
+ * @property strict: Throw error when the token is already registered.
+ */
+export interface ContainerConfigs {
+  strict?: boolean;
+}
+
+export const createDependencyInjectionContainer = (config?: ContainerConfigs) => {
   const registry = new Map();
   const namedRegistry = new Map();
   const instances = new Map();
@@ -51,8 +58,7 @@ export const createDependencyInjectionContainer = () => {
       if (registry.has(options.name)) {
         const reg = registry.get(options.name);
         if (typeof reg === "function") {
-          const val = Array.isArray(reg) ? reg.map(tryCreateInstance) : tryCreateInstance(reg);
-          instances.set(options.name, val);
+          instances.set(options.name, tryCreateInstance(reg));
         } else {
           instances.set(options.name, reg);
         }
@@ -98,18 +104,18 @@ export const createDependencyInjectionContainer = () => {
     options?: { multi?: boolean; name?: string },
   ): void;
   function makeInjectable(target: any, value: any = target, options?: { multi?: boolean; name?: string }) {
-    if (options?.multi) {
-      registry.set(target, [...(registry.get(target) || []), value]);
-    } else if (options?.name) {
+    if (options?.name) {
       if (!namedRegistry.has(target)) namedRegistry.set(target, new Map());
 
-      if (namedRegistry.get(target).has(options.name)) {
+      if (config?.strict && namedRegistry.get(target).has(options.name)) {
         throw Error(`'${target}' token has been already registered with '${options.name}' name`);
       }
 
       namedRegistry.get(target).set(options.name, value);
+    } else if (options?.multi) {
+      registry.set(target, [...(registry.get(target) || []), value]);
     } else {
-      if (registry.has(target)) {
+      if (config?.strict && registry.has(target)) {
         throw Error(`'${target}' token has been already registered`);
       }
 

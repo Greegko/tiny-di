@@ -208,6 +208,18 @@ describe("Dependency Injection", () => {
     assert.notStrictEqual(a, b);
   });
 
+  it("should throw error on duplication when it is in strict mode", () => {
+    const container = createDependencyInjectionContainer({ strict: true });
+
+    class A {
+      val = 5;
+    }
+
+    container.makeInjectable(A);
+
+    assert.throws(() => container.makeInjectable(A));
+  });
+
   it("should resolve multi classes", () => {
     const container = createDependencyInjectionContainer();
 
