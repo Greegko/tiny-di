@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert";
 
-import { Type, createDependencyInjectionContainer } from "./tiny-di";
+import { Type, createDependencyInjectionContainer, createInjectableToken } from "./tiny-di";
 
 describe("Dependency Injection", () => {
   it("should make classes injectable", () => {
@@ -59,7 +59,7 @@ describe("Dependency Injection", () => {
 
     type Config = { id: string };
 
-    const token = container.createInjectableToken<Config>("config");
+    const token = createInjectableToken<Config>("config");
 
     container.makeInjectable(token, { id: "test" });
 
@@ -110,7 +110,7 @@ describe("Dependency Injection", () => {
   it("should handle multiple injections", () => {
     const container = createDependencyInjectionContainer();
 
-    const token = container.createInjectableToken<number>("numbers");
+    const token = createInjectableToken<number>("numbers");
 
     container.makeInjectable(token, 1, { multi: true });
     container.makeInjectable(token, 2, { multi: true });
@@ -121,7 +121,7 @@ describe("Dependency Injection", () => {
   it("should allow callback type", () => {
     const container = createDependencyInjectionContainer();
 
-    const token = container.createInjectableToken<number>("numbers");
+    const token = createInjectableToken<number>("numbers");
 
     container.makeInjectable(token, () => 1);
 
@@ -131,7 +131,7 @@ describe("Dependency Injection", () => {
   it("should allow to name instances", () => {
     const container = createDependencyInjectionContainer();
 
-    const token = container.createInjectableToken<number>("numbers");
+    const token = createInjectableToken<number>("numbers");
 
     container.makeInjectable(token, 1, { name: "first" });
     container.makeInjectable(token, 2, { name: "second" });
@@ -143,7 +143,7 @@ describe("Dependency Injection", () => {
   it("should allow to name instances", () => {
     const container = createDependencyInjectionContainer();
 
-    const token = container.createInjectableToken<Type<{ val: number }>>("classes");
+    const token = createInjectableToken<Type<{ val: number }>>("classes");
 
     class A {
       val = 1;
@@ -172,7 +172,7 @@ describe("Dependency Injection", () => {
       val: number;
     }
 
-    const token = container.createInjectableToken<Type<AA>>("A Token");
+    const token = createInjectableToken<Type<AA>>("A Token");
 
     container.makeInjectable(token, A);
 
@@ -223,7 +223,7 @@ describe("Dependency Injection", () => {
   it("should resolve multi classes", () => {
     const container = createDependencyInjectionContainer();
 
-    const token = container.createInjectableToken<Type<{ val: number }>>("classes");
+    const token = createInjectableToken<Type<{ val: number }>>("classes");
 
     class A {
       val = 5;

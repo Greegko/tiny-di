@@ -123,13 +123,13 @@ export const createDependencyInjectionContainer = (config?: ContainerConfigs) =>
     }
   }
 
-  function createInjectableToken<T>(name: string): InjectableToken<T> {
-    return name as InjectableToken<T>;
-  }
-
   function injectable() {
     return <T extends Type>(value: T) => makeInjectable(value);
   }
 
-  return { inject, makeInjectable, createInjectableToken, injectable, clearInstances };
+  return { inject, makeInjectable, injectable, clearInstances };
 };
+
+export function createInjectableToken<T>(name: string): InjectableToken<T> {
+  return name as InjectableToken<T>;
+}
